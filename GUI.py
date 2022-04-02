@@ -5,6 +5,7 @@ class HandleGUI:
         #Store data
         self.results = [["", "", ""],["", "", ""],["", "", ""]]
         self.iteration = 0
+        self.winner = ""
 
         #Create Tk GUI 
         self.root = tk.Tk()
@@ -50,10 +51,41 @@ class HandleGUI:
         self.root.mainloop()
        
     def __clickOnButton(self, row, column):
-        self.__WriteSymbol(row, column)
+        self.__writeSymbol(row, column)
+        #We start iterations from 0, so when we have iter=4, we have 5 symbols on the board
+        if(self.iteration >= 4):
+            self.winner = self.__lookForWinner()
+        if(self.winner!=""):
+            self.__handleWinner()
         return
 
-    def __WriteSymbol(self, row, column):
+    def __handleWinner(self):
+        print(self.winner)
+        return
+
+    def __lookForWinner(self):
+        winner = self.__lookForWinner2("X")
+        if(winner=="X"):
+            return "X"
+        winner = self.__lookForWinner2("O")
+        if(winner=="O"):
+            return "O"    
+        return ""
+
+    def __lookForWinner2(self, player):
+        if(
+        self.results[0][0]==self.results[0][1]==self.results[0][2]==player or 
+        self.results[1][0]==self.results[1][1]==self.results[1][2]==player or 
+        self.results[2][0]==self.results[2][1]==self.results[2][2]==player or 
+        self.results[0][0]==self.results[1][0]==self.results[2][0]==player or 
+        self.results[0][1]==self.results[1][1]==self.results[2][1]==player or 
+        self.results[0][2]==self.results[1][2]==self.results[2][2]==player or
+        self.results[0][0]==self.results[1][1]==self.results[2][2]==player or
+        self.results[0][2]==self.results[1][1]==self.results[2][0]==player):
+            return player    
+        return
+
+    def __writeSymbol(self, row, column):
         #Check if empty
         if(self.results[row][column]!=""):
             return
@@ -83,10 +115,6 @@ class HandleGUI:
                 self.b9["text"] = self.results[row][column]
 
         self.iteration+=1
-        return
-
-    def inititializeGUI(self):
-
         return
 
 
