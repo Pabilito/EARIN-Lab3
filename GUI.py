@@ -67,7 +67,9 @@ class HandleGUI:
 
     def __callAI(self):
         self.AImove = True
-        self.l1["text"] = "Greatest Pole of all times is thinking"
+        self.l1["text"] = "Greatest Pole of all\n times is thinking"
+        #Force update - otherwise image may apper after AI choice (2 at once)
+        self.root.update()
         row, column = Algorithm().selectPoint(self.results)
         #Basically we simulate the human-clicking, but this time
         #we trigger it in an artificial way
@@ -76,8 +78,11 @@ class HandleGUI:
             self.winner = self.__lookForWinner()
         if(self.winner!=""):
             self.__handleWinner()
+            return
         self.l1["text"] = "Your turn\nBlack tiles are buttons"
         self.AImove = False
+        #Force update - otherwise image may not appear
+        self.root.update()
         return
 
     def __clickOnButton(self, row, column):
@@ -91,6 +96,7 @@ class HandleGUI:
             self.winner = self.__lookForWinner()
         if(self.winner!=""):
             self.__handleWinner()
+            return
         #We want to make AI move just after our own move, so the game is smooth
         self.__callAI()
         return
