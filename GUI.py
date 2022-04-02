@@ -2,17 +2,24 @@ import tkinter as tk
 
 class HandleGUI:
     def __init__(self):
+        #Store data
+        self.results = [["", "", ""],["", "", ""],["", "", ""]]
+        self.iteration = 0
+
         #Create Tk GUI 
         self.root = tk.Tk()
         self.root.title("TIC TAC TOE") 
+
+        #Not resizable
+        self.root.resizable(False, False) 
 
         #Define canvas
         self.canvas1 = tk.Canvas(self.root, width = 400, height = 300)
         self.canvas1.configure(bg="black")
 
         #Variables for size scalling 
-        self.buttonh = 7
-        self.buttonw = 14
+        self.buttonh = 6
+        self.buttonw = 2 * self.buttonh
         self.bgcolor = "black"
 
         #Text label
@@ -43,7 +50,39 @@ class HandleGUI:
         self.root.mainloop()
        
     def __clickOnButton(self, row, column):
-        print('Click', self.b1, row, column)
+        self.__WriteSymbol(row, column)
+        return
+
+    def __WriteSymbol(self, row, column):
+        #Check if empty
+        if(self.results[row][column]!=""):
+            return
+        
+        self.results[row][column] = "X" if (self.iteration%2 == 0) else "O"
+
+        if (row == 0):
+            if(column == 0):
+                self.b1["text"] = self.results[row][column]
+            elif (column == 1):
+                self.b2["text"] = self.results[row][column]
+            else:
+                self.b3["text"] = self.results[row][column]
+        elif (row == 1):
+            if(column == 0):
+                self.b4["text"] = self.results[row][column]
+            elif (column == 1):
+                self.b5["text"] = self.results[row][column]
+            else:
+                self.b6["text"] = self.results[row][column]
+        else:
+            if(column == 0):
+                self.b7["text"] = self.results[row][column]
+            elif (column == 1):
+                self.b8["text"] = self.results[row][column]
+            else:
+                self.b9["text"] = self.results[row][column]
+
+        self.iteration+=1
         return
 
     def inititializeGUI(self):
