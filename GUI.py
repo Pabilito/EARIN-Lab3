@@ -36,7 +36,7 @@ class HandleGUI:
 
         #Text label
         #I forgot about row=0, but it does not matter
-        self.l1=tk.Label(self.root, text="Play\nBlack tiles are buttons", height=self.toprowh, width=2*self.buttonw, font=("COMIC SANS MS", 20 ,"bold"),bg="white")
+        self.l1=tk.Label(self.root, text="Your turn\nBlack tiles are buttons", height=self.toprowh, width=2*self.buttonw, font=("COMIC SANS MS", 20 ,"bold"),bg="white")
         self.l1.grid(row = 1, column = 0, columnspan=2)
 
         self.restart=tk.Button(self.root ,text = "Restart", height = self.toprowh, width = self.buttonw, bg = "red", activebackground = "white", fg = "white", font = "Arial 20 bold", command = lambda: self.__clickOnRestart())
@@ -67,12 +67,16 @@ class HandleGUI:
 
     def __callAI(self):
         self.AImove = True
+        self.l1["text"] = "Greatest Pole of all times is thinking"
         row, column = Algorithm().selectPoint(self.results)
+        #Basically we simulate the human-clicking, but this time
+        #we trigger it in an artificial way
         self.__writeSymbol(row, column)
         if(self.iteration >= 4):
             self.winner = self.__lookForWinner()
         if(self.winner!=""):
             self.__handleWinner()
+        self.l1["text"] = "Your turn\nBlack tiles are buttons"
         self.AImove = False
         return
 
@@ -87,7 +91,7 @@ class HandleGUI:
             self.winner = self.__lookForWinner()
         if(self.winner!=""):
             self.__handleWinner()
-        #HERE WE WILL MAKE AI MOVE
+        #We want to make AI move just after our own move, so the game is smooth
         self.__callAI()
         return
 
@@ -99,6 +103,7 @@ class HandleGUI:
         return
 
     def __resetData(self):
+        #Reset to initial state to play again
         self.results = [["", "", ""],["", "", ""],["", "", ""]]
         self.iteration = 0
         self.winner = ""
@@ -111,10 +116,10 @@ class HandleGUI:
         self.b7["image"] = self.background
         self.b8["image"] = self.background
         self.b9["image"] = self.background
-        self.l1["text"] = "Play\nBlack tiles are buttons"
+        self.l1["text"] = "Your turn\nBlack tiles are buttons"
         self.start = 1 - self.start     #we alternate starting turns
         if(self.start):
-            #HERE WE WILL MAKE AI MOVE
+            #AI move is 1st
             self.__callAI()
         return
 
@@ -149,6 +154,7 @@ class HandleGUI:
         
         self.results[row][column] = "X" if (self.iteration%2 == 0) else "O"
 
+        #Assign proper image to a button
         if (row == 0):
             if(column == 0):               
                 self.b1["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
