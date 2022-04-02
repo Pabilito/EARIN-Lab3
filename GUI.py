@@ -86,8 +86,8 @@ class HandleGUI:
         return
 
     def __clickOnButton(self, row, column):
-        #Check if we are in a play mode
-        if(self.winner!="" or self.AImove):
+        #Some safeguards
+        if(self.winner!="" or self.AImove or self.results[row][column]!=""):
             return
         #Put symbol on the board
         self.__writeSymbol(row, column)
