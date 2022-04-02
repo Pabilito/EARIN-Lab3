@@ -13,6 +13,7 @@ class Algorithm:
         while(currentBoardState[bestRow][bestColumn]!=""):
             bestRow = random.randint(0,2)
             bestColumn = random.randint(0,2)
+        #END OF TEST ALGORITHM
 
         #Return row and collumn
         return bestRow, bestColumn

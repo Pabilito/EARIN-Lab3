@@ -65,22 +65,26 @@ class HandleGUI:
     def __clickOnRestart(self):
         self.__resetData()
 
-    def __callAI(self):
+    def __callAI(self):    
         self.AImove = True
         self.l1["text"] = "Greatest Pole of all\n times is thinking"
+        
         #Force update - otherwise image may apper after AI choice (2 at once)
         self.root.update()
         row, column = Algorithm().selectPoint(self.results)
+        
         #Basically we simulate the human-clicking, but this time
         #we trigger it in an artificial way
         self.__writeSymbol(row, column)
+        
+        self.l1["text"] = "Your turn\nBlack tiles are buttons"
+        self.AImove = False
+
         if(self.iteration >= 4):
             self.winner = self.__lookForWinner()
         if(self.winner!=""):
             self.__handleWinner()
             return
-        self.l1["text"] = "Your turn\nBlack tiles are buttons"
-        self.AImove = False
         #Force update - otherwise image may not appear
         self.root.update()
         return
@@ -104,8 +108,10 @@ class HandleGUI:
     def __handleWinner(self):
         if(self.winner == "Draw"):
             self.l1["text"] = "Draw!"
-            return
-        self.l1["text"] = self.winner + " is a winner!"
+        elif(self.winner == "O"):
+            self.l1["text"] = "Greatest Pole is a winner!"
+        else:
+            self.l1["text"] = "You are a winner!"
         return
 
     def __resetData(self):
@@ -158,7 +164,7 @@ class HandleGUI:
         if(self.results[row][column]!=""):
             return
         
-        self.results[row][column] = "X" if (self.iteration%2 == 0) else "O"
+        self.results[row][column] = "X" if ((self.iteration+self.start)%2 == 0) else "O"
 
         #Assign proper image to a button
         if (row == 0):
@@ -186,7 +192,7 @@ class HandleGUI:
         self.iteration+=1
         return
 
-    def initializeGame(self):     
+    def initializeGame(self):  
         self.root.mainloop()
         return
 
