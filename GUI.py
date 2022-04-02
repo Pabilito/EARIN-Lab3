@@ -76,6 +76,9 @@ class HandleGUI:
         return
 
     def __handleWinner(self):
+        if(self.winner == "Draw"):
+            self.l1["text"] = "Draw!"
+            return
         self.l1["text"] = self.winner + " is a winner!"
         return
 
@@ -101,7 +104,9 @@ class HandleGUI:
             return "X"
         winner = self.__lookForWinner2("O")
         if(winner=="O"):
-            return "O"    
+            return "O"
+        if(self.iteration == 9):
+            return "Draw"    
         return ""
 
     def __lookForWinner2(self, player):
