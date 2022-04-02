@@ -1,7 +1,7 @@
 from GUI import HandleGUI
 
 def main():
-    HandleGUI()
+    HandleGUI().initializeGame()
     return
 
 main()

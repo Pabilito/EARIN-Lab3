@@ -1,4 +1,5 @@
 import tkinter as tk
+from algorithm import Algorithm
 
 class HandleGUI:
     def __init__(self):
@@ -6,6 +7,10 @@ class HandleGUI:
         self.results = [["", "", ""],["", "", ""],["", "", ""]]
         self.iteration = 0
         self.winner = ""
+        self.start = 0
+
+        #Flag - we cannot make a move when AI thinks, just in case
+        self.AImove = False
 
         #Create Tk GUI 
         self.root = tk.Tk()
@@ -57,14 +62,23 @@ class HandleGUI:
         self.b9=tk.Button(self.root, image = self.background, bd=0, command = lambda: self.__clickOnButton(2,2))
         self.b9.grid(row=4,column=2)
 
-        self.root.mainloop()
-
     def __clickOnRestart(self):
         self.__resetData()
 
+    def __callAI(self):
+        self.AImove = True
+        row, column = Algorithm().selectPoint(self.results)
+        self.__writeSymbol(row, column)
+        if(self.iteration >= 4):
+            self.winner = self.__lookForWinner()
+        if(self.winner!=""):
+            self.__handleWinner()
+        self.AImove = False
+        return
+
     def __clickOnButton(self, row, column):
         #Check if we are in a play mode
-        if(self.winner!=""):
+        if(self.winner!="" or self.AImove):
             return
         #Put symbol on the board
         self.__writeSymbol(row, column)
@@ -73,6 +87,8 @@ class HandleGUI:
             self.winner = self.__lookForWinner()
         if(self.winner!=""):
             self.__handleWinner()
+        #HERE WE WILL MAKE AI MOVE
+        self.__callAI()
         return
 
     def __handleWinner(self):
@@ -96,6 +112,10 @@ class HandleGUI:
         self.b8["image"] = self.background
         self.b9["image"] = self.background
         self.l1["text"] = "Play\nBlack tiles are buttons"
+        self.start = 1 - self.start     #we alternate starting turns
+        if(self.start):
+            #HERE WE WILL MAKE AI MOVE
+            self.__callAI()
         return
 
     def __lookForWinner(self):
@@ -131,27 +151,31 @@ class HandleGUI:
 
         if (row == 0):
             if(column == 0):               
-                self.b1["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b1["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
             elif (column == 1):
-                self.b2["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b2["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
             else:
-                self.b3["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b3["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
         elif (row == 1):
             if(column == 0):
-                self.b4["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b4["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
             elif (column == 1):
-                self.b5["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b5["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
             else:
-                self.b6["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b6["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
         else:
             if(column == 0):
-                self.b7["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b7["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
             elif (column == 1):
-                self.b8["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b8["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
             else:
-                self.b9["image"] = self.photoX if (self.iteration%2 == 0) else self.photoO
+                self.b9["image"] = self.photoX if ((self.iteration+self.start)%2 == 0) else self.photoO
 
         self.iteration+=1
+        return
+
+    def initializeGame(self):     
+        self.root.mainloop()
         return
 
 
