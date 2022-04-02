@@ -16,6 +16,7 @@ class HandleGUI:
         self.bgcolor = "black"
 
         #Text label
+        #I forgot about row=0, but it does not matter
         self.l1=tk.Label(self.root, text="Sample text", height=3, width=self.buttonw, font=("COMIC SANS MS", 20 ,"bold"),bg="white")
         self.l1.grid(row = 1, column = 0)
 
