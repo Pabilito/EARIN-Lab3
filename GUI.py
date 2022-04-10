@@ -71,7 +71,7 @@ class HandleGUI:
         
         #Force update - otherwise image may apper after AI choice (2 at once)
         self.root.update()
-        row, column = Algorithm().selectPoint(self.results)
+        row, column = Algorithm().selectPoint(self.results, self.returnSymbol())
         
         #Basically we simulate the human-clicking, but this time
         #we trigger it in an artificial way
@@ -159,12 +159,15 @@ class HandleGUI:
             return player    
         return
 
+    def returnSymbol(self):
+        return "X" if ((self.iteration+self.start)%2 == 0) else "O"
+
     def __writeSymbol(self, row, column):
         #Check if empty
         if(self.results[row][column]!=""):
             return
         
-        self.results[row][column] = "X" if ((self.iteration+self.start)%2 == 0) else "O"
+        self.results[row][column] = self.returnSymbol()
 
         #Assign proper image to a button
         if (row == 0):
