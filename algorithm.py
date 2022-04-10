@@ -12,7 +12,7 @@ class Algorithm:
         time.sleep(1)
         
         self.best_state = None
-        alpha = self.__alpha_beta(state, -1000, 1000, player, 2)
+        alpha = self.__alpha_beta(state, -1000, 1000, player, 3)
         best_row, best_column = self.__bestStateCoordinates(state, self.best_state)
         #END OF TEST ALGORITHM
 
@@ -61,6 +61,8 @@ class Algorithm:
     def __testSingleField(self, state, i, j):
         try:
             if state[i][j] == "":
+                if i < 0 or j < 0:
+                    raise IndexError
                 return 1
         except IndexError:
             return 0
@@ -86,11 +88,10 @@ class Algorithm:
         Evaluates the heuristic value of the given move for one player
         '''
         evaluation = 0
-        if self.__threeInLine(state, player):
-            return 1000 #in stead of infinity, we use here 1000
         evaluation += self.__twoInLine(state, player)
         evaluation += self.__singleCase(state, player)
-        return evaluation        
+        #        print(evaluation, state)
+        return evaluation      
 
     
     def __heuristicFunction(self, state, player):
@@ -133,13 +134,14 @@ class Algorithm:
 
         T - set of the terminal states
         '''
+        next_player = "X" if player == "O" else "O"
         if self.__threeInLine(state, player):
              #the final state reached, game over
             return 100 if player == self.player else -100
         elif depth == 0:
-            return self.__heuristicFunction(state, player)
+            return self.__heuristicFunction(state, next_player)
         
-        next_player = "X" if player == "O" else "O"
+
         U = self.__successors(state, player)
         best_state = state
         if self.player == player: #computer's turn
