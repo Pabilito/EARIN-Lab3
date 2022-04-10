@@ -7,18 +7,13 @@ class Algorithm:
     def selectPoint(self, state, player):
         #Current Board State is a 3x3 array with 'X' and 'O' and '' if empty
         self.player = player
-        #        best_row = 1
-        #        best_column = 1
         
         #WRITE ALGORITHM HERE - THIS ONE IS ONLY FOR TESTING
         time.sleep(1)
-        '''
-        while(currentBoardState[bestRow][bestColumn]!=""):
-            bestRow = random.randint(0,2)
-            bestColumn = random.randint(0,2)
-        '''
-        alpha, best_state = self.__alpha_beta(state, -1000, 1000, player, 5)
-        best_row, best_column = self.__bestStateCoordinates(state, best_state)
+        
+        self.best_state = None
+        alpha = self.__alpha_beta(state, -1000, 1000, player, 2)
+        best_row, best_column = self.__bestStateCoordinates(state, self.best_state)
         #END OF TEST ALGORITHM
 
         #Return row and collumn
@@ -100,7 +95,7 @@ class Algorithm:
     
     def __heuristicFunction(self, state, player):
         '''
-        Return evaluated value considering the opponent moves
+        Returns evaluated value considering the opponent moves
         '''
         evaluation = self.__playerMoveEvaluation(state, player)
         evaluation -= self.__playerMoveEvaluation(state, "X" if player == "O" else "X")
@@ -140,13 +135,13 @@ class Algorithm:
         '''
         if self.__threeInLine(state, player):
              #the final state reached, game over
-            return 1000 if player == self.player else -1000
+            return 100 if player == self.player else -100
         elif depth == 0:
             return self.__heuristicFunction(state, player)
         
-        next_player = "X" if player == "O" else "X"
+        next_player = "X" if player == "O" else "O"
         U = self.__successors(state, player)
-        
+        best_state = state
         if self.player == player: #computer's turn
             for u in U:
                 new_value = self.__alpha_beta(u, alpha, beta, next_player, depth-1)
@@ -155,10 +150,15 @@ class Algorithm:
                     alpha = new_value
                 if alpha >= beta:
                     return beta
-            return alpha, u
+            self.best_state = best_state
+            return alpha
         else: #human turn
             for u in U:
-                beta = min(self.__alpha_beta(u, alpha, beta, next_player, depth-1), beta)
+                new_value = self.__alpha_beta(u, alpha, beta, next_player, depth-1)
+                if new_value < beta:
+                    beta = new_value
+                    best_state = u
                 if alpha >= beta:
                     return beta
+            self.best_state = best_state
             return beta
