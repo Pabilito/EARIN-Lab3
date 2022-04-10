@@ -4,11 +4,11 @@ import time
 import copy
 
 class Algorithm:
-    def selectPoint(self, currentBoardState, player):
+    def selectPoint(self, state, player):
         #Current Board State is a 3x3 array with 'X' and 'O' and '' if empty
         self.player = player
-        bestRow = 1
-        bestColumn = 1
+        #        best_row = 1
+        #        best_column = 1
         
         #WRITE ALGORITHM HERE - THIS ONE IS ONLY FOR TESTING
         time.sleep(1)
@@ -17,12 +17,12 @@ class Algorithm:
             bestRow = random.randint(0,2)
             bestColumn = random.randint(0,2)
         '''
-        self.__alpha_beta(currentBoardState, 0, 0, 1)
-
+        alpha, best_state = self.__alpha_beta(state, -1000, 1000, player, 5)
+        best_row, best_column = self.__bestStateCoordinates(state, best_state)
         #END OF TEST ALGORITHM
 
         #Return row and collumn
-        return bestRow, bestColumn
+        return best_row, best_column
     def __threeInLine(self, state, player):
         if( #There are 8 conditions (3x rows, 3x columns, 2x diagonnally)
         state[0][0]==state[0][1]==state[0][2]==player or 
@@ -102,8 +102,8 @@ class Algorithm:
         '''
         Return evaluated value considering the opponent moves
         '''
-        evaluation = __playeMoveEvaluation(state, player)
-        evaluation -= __playerMoveEvaluation(state, "X" if player == "O" else "X")
+        evaluation = self.__playerMoveEvaluation(state, player)
+        evaluation -= self.__playerMoveEvaluation(state, "X" if player == "O" else "X")
         if player != self.player:
             evaluation *= -1
         return evaluation
@@ -121,6 +121,15 @@ class Algorithm:
                     U[-1][i][j] = player
         return U
 
+    def __bestStateCoordinates(self, state, best_state):
+        '''
+        Returns the coordinates of the best state
+        '''
+        for i in range(3):
+            for j in range(3):
+                if state[i][j] != best_state[i][j]:
+                    return i, j
+
     def __alpha_beta(self, state, alpha, beta, player, depth=3):
         '''
         state - state with information who is moving
@@ -129,26 +138,27 @@ class Algorithm:
 
         T - set of the terminal states
         '''
-        best_move = None
         if self.__threeInLine(state, player):
-            return 1000 #the final state reached, game over
+             #the final state reached, game over
+            return 1000 if player == self.player else -1000
         elif depth == 0:
-            return __heuristicFunction(state, player)
+            return self.__heuristicFunction(state, player)
+        
+        next_player = "X" if player == "O" else "X"
+        U = self.__successors(state, player)
         
         if self.player == player: #computer's turn
-            U = self.__successors(state, player)
             for u in U:
-                next_player = "X" if player == "O" else "X"
-                alpha = max(alpha, self.__alpha_beta(u, alpha, beta, next_player, depth-1))
+                new_value = self.__alpha_beta(u, alpha, beta, next_player, depth-1)
+                if new_value > alpha:
+                    best_state = u
+                    alpha = new_value
                 if alpha >= beta:
-                    best_move = u
                     return beta
-            return alpha
+            return alpha, u
         else: #human turn
-            U = self.__successors(state, player)
             for u in U:
-                next_player = "X" if player == "O" else "X"
                 beta = min(self.__alpha_beta(u, alpha, beta, next_player, depth-1), beta)
-                if alpha <= beta:
-                    return alpha
+                if alpha >= beta:
+                    return beta
             return beta
