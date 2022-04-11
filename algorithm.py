@@ -1,5 +1,3 @@
-#Those imports probably will not be useful in final algorithm
-import random 
 import time
 import copy
 
@@ -8,13 +6,12 @@ class Algorithm:
         #Current Board State is a 3x3 array with 'X' and 'O' and '' if empty
         self.player = player
         
-        #WRITE ALGORITHM HERE - THIS ONE IS ONLY FOR TESTING
+        #Cosmetic
         time.sleep(1)
         
         self.best_state = None
         alpha = self.__alpha_beta(state, -1000, 1000, player, 4)
         best_row, best_column = self.__bestStateCoordinates(state, self.best_state)
-        #END OF TEST ALGORITHM
 
         #Return row and collumn
         return best_row, best_column
