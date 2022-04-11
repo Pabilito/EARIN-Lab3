@@ -74,11 +74,11 @@ class Algorithm:
 
     def __alpha_beta(self, state, alpha, beta, player, depth=3):
         '''
-        state - state with information who is moving
+        alpha-beta pruning algorithm
+        
+        state - current state of a board
         alpha, beta - parameters for alpha beta pruning alg.
-        depth - is max depth of the
-
-        T - set of the terminal states
+        depth - is max depth of the recursion
         '''
         next_player = "X" if player == "O" else "O"
 
